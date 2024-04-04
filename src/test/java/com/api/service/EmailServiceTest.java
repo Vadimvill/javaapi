@@ -102,6 +102,37 @@ class EmailServiceTest {
 
         Mockito.verify(emailRepository,Mockito.times(1)).findById(1L);
     }
+    @Test
+    void shouldReturnUpdateEmailsByIdWithoutDomain(){
+        String oldEmail = "old@example.com";
+        String newEmail = "new@example.com";
+        EmailType emailType = new EmailType("example.com");
+
+        // Mock repository behavior
+        Mockito.when(emailRepository.findById(1L)).thenReturn(Optional.of(new Email(1L,oldEmail)));
+        Mockito.when(emailTypeRepository.findByDomain("example.com")).thenReturn(null);
+
+        // Invoke method
+        emailService.updateEmail(1L, newEmail);
+
+        Mockito.verify(emailRepository,Mockito.times(1)).findById(1L);
+    }
+    @Test
+    void shouldReturnUpdateEmailsByNameWithoutDomain(){
+        String oldEmail = "old@example.com";
+        String newEmail = "new@example.com";
+        Email emailEntity = new Email(oldEmail);
+        EmailType emailType = new EmailType("example.com");
+
+        // Mock repository behavior
+        Mockito.when(emailRepository.findByName(oldEmail)).thenReturn(emailEntity);
+        Mockito.when(emailTypeRepository.findByDomain("example.com")).thenReturn(null);
+
+        // Invoke method
+        emailService.updateEmail(oldEmail, newEmail);
+
+        Mockito.verify(emailRepository,Mockito.times(1)).findByName(Mockito.any());
+    }
 
 
     @Transactional
