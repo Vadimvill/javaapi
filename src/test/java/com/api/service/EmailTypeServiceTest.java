@@ -46,7 +46,7 @@ class EmailTypeServiceTest {
         // Mock data
         Long id = 1L;
         String newDomain = "newexample.com";
-        EmailType emailTypeEntity = new EmailType(1L, "example.com");
+        EmailType emailTypeEntity = new EmailType( "example.com");
         emailTypeEntity.setEmails(new ArrayList<>()); // Initialize emails list
 
         // Mock repository behavior
