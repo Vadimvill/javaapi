@@ -8,6 +8,7 @@ import com.api.dto.EmailDTO;
 import com.api.entity.Email;
 import com.api.entity.EmailType;
 import com.api.exceptions.ServiceException;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,32 @@ class EmailServiceTest {
         Assertions.assertEquals("give",emailService.getConfidentialText(text3));
         Assertions.assertEquals("give",emailService.getConfidentialText(text4));
     }
+    @Test
+    void shouldReturnEmailsByEmailType(){
+        List<Email> list = new ArrayList<>();
+        list.add(new Email(1L,"gagagga@mail.ru"));
+        list.add(new Email(2L,"wqeqe@mail.ru"));
+        Mockito.when(emailRepository.findByEmailTypeDomain("mail.ru")).thenReturn(list);
+        List<EmailDTO> emailDTOList = new ArrayList<>();
+        emailDTOList = emailService.getEmailsByEmailType("mail.ru");
+        Assertions.assertNotNull(emailDTOList);
+        Assertions.assertEquals(emailDTOList.size(),2);
+    }
 
+
+    @Transactional
+    public List<EmailDTO> getEmailsByEmailType(String text) {
+        List<EmailDTO> strings = new ArrayList<>();
+        List<Email> emailEntities;
+        emailEntities = emailRepository.findByEmailTypeDomain(text);
+        for (int i = 0; i < emailEntities.size(); i++) {
+            cache.put(emailEntities.get(i).getEmail(), emailEntities.get(i));
+            customLogger.logCachePut(emailEntities.get(i).getEmail());
+            strings.add(new EmailDTO(emailEntities.get(i).getId().toString() + ". " + emailEntities.get(i).getEmail()));
+        }
+
+        return strings;
+    }
     private List<Email> getEmails(){
         List<Email> list = new ArrayList<>();
         list.add(new Email(1L,"vafda@gmail.com"));
