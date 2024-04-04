@@ -94,13 +94,13 @@ class EmailServiceTest {
         EmailType emailType = new EmailType("example.com");
 
         // Mock repository behavior
-        Mockito.when(emailRepository.findById(1L)).thenReturn(Optional.of(new Email(oldEmail)));
+        Mockito.when(emailRepository.findById(1L)).thenReturn(Optional.of(new Email(1L,oldEmail)));
         Mockito.when(emailTypeRepository.findByDomain("example.com")).thenReturn(emailType);
 
         // Invoke method
         emailService.updateEmail(1L, newEmail);
 
-        Mockito.verify(emailRepository,Mockito.times(1)).findByName(Mockito.any());
+        Mockito.verify(emailRepository,Mockito.times(1)).findById(1L);
     }
 
 
