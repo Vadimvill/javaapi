@@ -124,7 +124,8 @@ public class EmailTypeService {
     public void deleteDomain(Long id) {
         Optional<EmailType> emailTypeEntity = emailTypeRepository.findById(id);
         if (emailTypeEntity.isPresent()) {
-            if (!emailTypeEntity.get().getEmails().isEmpty()) {
+            List<Email> emails = emailTypeEntity.get().getEmails();
+            if (emails != null && !emails.isEmpty()) {
                 customLogger.logError(EXCEPTION_MSG);
                 throw new ServiceException();
             }
@@ -146,15 +147,18 @@ public class EmailTypeService {
             optionalEmailTypeEntity = Optional.ofNullable(emailTypeRepository.findByDomain(name));
         }
         if (optionalEmailTypeEntity.isPresent()) {
-            if (!optionalEmailTypeEntity.get().getEmails().isEmpty()) {
+            EmailType emailTypeEntity = optionalEmailTypeEntity.get();
+            List<Email> emails = emailTypeEntity.getEmails();
+            if (emails != null && !emails.isEmpty()) {
                 customLogger.logError(EXCEPTION_MSG);
                 throw new ServiceException();
             }
-            customLogger.logCacheRemove(optionalEmailTypeEntity.get().getDomain());
-            emailTypeRepository.delete(emailTypeRepository.findByDomain(name));
-            cache.remove(optionalEmailTypeEntity.get().getDomain());
+            customLogger.logCacheRemove(emailTypeEntity.getDomain());
+            emailTypeRepository.delete(emailTypeEntity);
+            cache.remove(emailTypeEntity.getDomain());
         } else {
             throw new ServiceException();
         }
     }
+
 }
