@@ -140,8 +140,8 @@ class EmailTypeServiceTest {
     public void testGetDomains_Success() {
         // Mock data
         List<EmailType> emailTypes = new ArrayList<>();
-        emailTypes.add(new EmailType(1L, "example1.com"));
-        emailTypes.add(new EmailType(2L, "example2.com"));
+        emailTypes.add(new EmailType( "example1.com"));
+        emailTypes.add(new EmailType( "example2.com"));
 
         // Mock repository behavior
         when(emailTypeRepository.findAll()).thenReturn(emailTypes);
@@ -161,7 +161,7 @@ class EmailTypeServiceTest {
         // Mock data
         Long id = 1L;
         String newDomain = "newexample.com";
-        EmailType emailTypeEntity = new EmailType(id, "example.com");
+        EmailType emailTypeEntity = new EmailType( "example.com");
 
         // Mock repository behavior
         when(emailTypeRepository.findById(id)).thenReturn(Optional.of(emailTypeEntity));
@@ -181,7 +181,7 @@ class EmailTypeServiceTest {
         // Mock data
         String domain = "example.com";
         String newDomain = "newexample.com";
-        EmailType emailTypeEntity = new EmailType(1L, domain);
+        EmailType emailTypeEntity = new EmailType(domain);
 
         // Mock repository behavior
         when(emailTypeRepository.findByDomain(domain)).thenReturn(emailTypeEntity);
