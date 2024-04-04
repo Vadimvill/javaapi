@@ -1,3 +1,4 @@
+
 package com.api.service;
 
 import com.api.component.Cache;
@@ -8,7 +9,6 @@ import com.api.dto.EmailDTO;
 import com.api.entity.Email;
 import com.api.entity.EmailType;
 import com.api.exceptions.ServiceException;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -186,6 +186,54 @@ class EmailServiceTest {
         list.add(new Email(2L,"vafrteda@mail.com"));
         list.add(new Email(3L,"vafda@rambler.ru"));
         return list;
+    }
+
+    @Test
+    public void testDeleteEmail_EmailInCache_Success() {
+        // Mock data
+        String email = "test@example.com";
+        Email emailEntity = new Email(email);
+
+        // Mock cache behavior
+        when(cache.get(email)).thenReturn(Optional.of(emailEntity));
+
+        // Invoke method
+        emailService.deleteEmail(email);
+
+        // Verify interactions and assertions
+      
+    }
+
+    @Test
+    public void testDeleteEmail_EmailInRepository_Success() {
+        // Mock data
+        String email = "test@example.com";
+        Email emailEntity = new Email(email);
+
+        // Mock repository behavior
+        when(emailRepository.findByName(email)).thenReturn(emailEntity);
+
+        // Invoke method
+        emailService.deleteEmail(email);
+
+        // Verify interactions and assertions
+
+    }
+
+    @Test
+    public void testDeleteEmail_EmailNotFound_ErrorLogged() {
+        // Mock data
+        String email = "not_found@example.com";
+
+        // Mock cache behavior
+        when(cache.get(email)).thenReturn(Optional.empty());
+        // Mock repository behavior
+        when(emailRepository.findByName(email)).thenReturn(null);
+
+        // Invoke method and verify exception
+        assertThrows(ServiceException.class, () -> emailService.deleteEmail(email));
+
+        // Verify interactions and assertions
     }
 
 }
