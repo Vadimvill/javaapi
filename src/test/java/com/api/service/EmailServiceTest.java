@@ -17,6 +17,7 @@ import org.mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 class EmailServiceTest {
@@ -69,6 +70,37 @@ class EmailServiceTest {
         emailDTOList = emailService.getEmailsByEmailType("mail.ru");
         Assertions.assertNotNull(emailDTOList);
         Assertions.assertEquals(emailDTOList.size(),2);
+    }
+    @Test
+    void shouldReturnUpdateEmailsByName(){
+        String oldEmail = "old@example.com";
+        String newEmail = "new@example.com";
+        Email emailEntity = new Email(oldEmail);
+        EmailType emailType = new EmailType("example.com");
+
+        // Mock repository behavior
+        Mockito.when(emailRepository.findByName(oldEmail)).thenReturn(emailEntity);
+        Mockito.when(emailTypeRepository.findByDomain("example.com")).thenReturn(emailType);
+
+        // Invoke method
+        emailService.updateEmail(oldEmail, newEmail);
+
+        Mockito.verify(emailRepository,Mockito.times(1)).findByName(Mockito.any());
+    }
+    @Test
+    void shouldReturnUpdateEmailsById(){
+        String oldEmail = "old@example.com";
+        String newEmail = "new@example.com";
+        EmailType emailType = new EmailType("example.com");
+
+        // Mock repository behavior
+        Mockito.when(emailRepository.findById(1L)).thenReturn(Optional.of(new Email(oldEmail)));
+        Mockito.when(emailTypeRepository.findByDomain("example.com")).thenReturn(emailType);
+
+        // Invoke method
+        emailService.updateEmail(1L, newEmail);
+
+        Mockito.verify(emailRepository,Mockito.times(1)).findByName(Mockito.any());
     }
 
 
