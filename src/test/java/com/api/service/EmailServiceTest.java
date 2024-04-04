@@ -47,6 +47,17 @@ class EmailServiceTest {
         Assertions.assertEquals(3,res.size());
         Assertions.assertNotNull(res.get(0));
     }
+    @Test
+    void shouldReturnProcessedText() {
+        String text1 = "rooror@mail.com give+375292556867";
+        String text2 = "rooror@mail.com give";
+        String text3 = "give+375292556867";
+        String text4 = "give";
+        Assertions.assertEquals(" give",emailService.getConfidentialText(text1));
+        Assertions.assertEquals(" give",emailService.getConfidentialText(text2));
+        Assertions.assertEquals("give",emailService.getConfidentialText(text3));
+        Assertions.assertEquals("give",emailService.getConfidentialText(text4));
+    }
 
     private List<Email> getEmails(){
         List<Email> list = new ArrayList<>();
